@@ -10,4 +10,4 @@ i-bem.bemhtml:
 	curl https://raw.githubusercontent.com/bem/bem-core/v2.3.0/common.blocks/i-bem/i-bem.bemhtml -O
 
 clean:
-	rm bundle.js template.js i-bem.bemhtml
+	rm bundle.js template.js
