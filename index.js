@@ -13,6 +13,8 @@ var convertHTML = require('html-to-vdom')({
 var currentVtree;
 var rootElement;
 
+var components = require('./components/components');
+
 function render() {
     var bemjson = Array.apply(null, {length: state.length})
         .map(function (_, index) {
@@ -31,6 +33,7 @@ function render() {
     rootElement = document.querySelector('.root');
     currentVtree = newVtree;
 
+    components.init(rootElement);
 }
 
 function renderDecorator(fn) {
@@ -41,7 +44,7 @@ function renderDecorator(fn) {
     };
 }
 
-var state = {
+var state = window.state = {
     length: 0,
     startIndex: 0,
     redLettersNumber: 0
