@@ -2,6 +2,7 @@
 
 var inherits = require('util').inherits;
 var Component = require('./Component');
+var virtualBemhtml = require('../virtualBemhtml');
 
 function Hello() {
     Component.apply(this, arguments);
@@ -13,4 +14,4 @@ Hello.prototype.onClick = function () {
     console.log('hello click', this.node);
 };
 
-module.exports = Hello;
+virtualBemhtml.decl('hello', Hello);
