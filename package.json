@@ -9,9 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "alt": "^0.17.1",
     "bem-xjst": "^1.0.3",
     "browserify": "^11.0.0",
     "html-to-vdom": "^0.7.0",
+    "lodash": "^3.10.0",
     "virtual-dom": "^2.0.1"
   }
 }
