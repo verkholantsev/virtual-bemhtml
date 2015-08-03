@@ -2,18 +2,17 @@
 
 var inherits = require('util').inherits;
 var Component = require('./Component');
-var virtualBemhtml = require('../virtualBemhtml');
 
 var HelloStore = require('../stores/HelloStore');
 var HelloActions = require('../actions/HelloActions');
+
+require('./Button');
 
 function Hello() {
     Component.apply(this, arguments);
 }
 
-inherits(Hello, Component);
-
-Hello.prototype.blockName = 'hello';
+Component.decl('hello', Hello, Component);
 
 Hello.prototype.componentDidMount = function () {
     var node = this.node;

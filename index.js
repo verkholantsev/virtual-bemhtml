@@ -1,11 +1,10 @@
 /* globals document */
 
 var Hello = require('./components/Hello');
+var Component = require('./components/Component');
 
 document.addEventListener('DOMContentLoaded', function () {
-    var hello = new Hello();
     var rootElement = document.querySelector('.root');
 
-    hello.render();
-    hello.appendTo(rootElement);
+    Component.mount(Hello, rootElement);
 });

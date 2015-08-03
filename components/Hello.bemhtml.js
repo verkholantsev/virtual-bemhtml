@@ -66,7 +66,3 @@ block('hello').elem('first-part').attrs()(function () {
 block('hello').elem('first-part').tag()('span');
 
 block('hello').elem('second-part').tag()('span');
-
-block('button').tag()('button');
-
-block('input').tag()('input');

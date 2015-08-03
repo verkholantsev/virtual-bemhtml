@@ -14,7 +14,10 @@ var patch = require('virtual-dom/patch');
 var BEMHTML = require('../template');
 var assign = require('lodash/object/assign');
 
-function Component(id) {
+var inherits = require('util').inherits;
+
+function Component(node, id) {
+    this.node = node || null;
 }
 
 Component.prototype.getState = function () {
@@ -60,23 +63,80 @@ Component.prototype.render = function (bemjson) {
     if (node) {
         var patches = diff(currentVTree, newVTree);
 
-        return void patch(node, patches);
+        patch(node, patches);
+    } else {
+        node = createElement(newVTree);
+        this.node = node;
+
+        var currentId = id++;
+        node.setAttribute(DATA_ID_ATTRIBUTE, currentId);
+        componentCache[currentId] = this;
+        this.componentDidMount();
     }
 
-
-    node = createElement(newVTree);
-
-    this.node = node;
+    _initComponents(node);
 };
 
 Component.prototype.appendTo = function (parentNode) {
     var node = this.node;
     parentNode.appendChild(node);
-
-    this.componentDidMount();
 };
 
-Component.prototype.componentDidMount = function () {
+Component.prototype.componentDidMount = function () {};
+
+Component.decl = function (blockName, Constructor, BaseConstructor) {
+    inherits(Constructor, BaseConstructor);
+    Constructor.prototype.blockName = blockName;
+    Constructors[blockName] = Constructor;
 };
+
+Component.mount = function (Constructor, parentNode) {
+    var currentId = id++;
+    var instance = new Constructor(null, id);
+    instance.render();
+    instance.appendTo(parentNode);
+};
+
+var Constructors = {};
+var componentCache = {};
+var id = 0;
+var DATA_ID_ATTRIBUTE = 'data-component-id';
+
+function _initComponents(node) {
+    var stack = [node];
+    var currentNode;
+
+    while (stack.length > 0) {
+        currentNode = stack.pop();
+
+        _initNode(currentNode);
+
+        var children = currentNode.children;
+        var childrenLength = children.length;
+        for (var i = childrenLength - 1; i >= 0; i--) {
+            stack.push(children[i]);
+        }
+    }
+}
+
+function _initNode(node) {
+    if (node.getAttribute(DATA_ID_ATTRIBUTE)) {
+        return;
+    }
+
+    var currentId = id++;
+    node.setAttribute(DATA_ID_ATTRIBUTE, currentId);
+
+    var classNames = node.className.split(' ');
+    classNames.forEach(function (className) {
+        var Constructor = Constructors[className];
+
+        if (Constructor) {
+            var instance = new Constructor(node, id);
+            componentCache[currentId] = instance;
+            instance.componentDidMount();
+        }
+    });
+}
 
 module.exports = Component;
